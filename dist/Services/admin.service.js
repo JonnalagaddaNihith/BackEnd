@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AdminService = void 0;
 const db_config_1 = require("../Config/db.config");
+const utils_1 = require("../Config/utils");
 class AdminService {
     static async getAnalytics() {
         try {
@@ -105,7 +106,13 @@ class AdminService {
          FROM Properties p
          JOIN Users u ON p.owner_id = u.id
          ORDER BY p.id DESC`);
-            return properties;
+            return properties.map(property => ({
+                ...property,
+                photo1: (0, utils_1.bufferToBase64)(property.photo1),
+                photo2: (0, utils_1.bufferToBase64)(property.photo2),
+                photo3: (0, utils_1.bufferToBase64)(property.photo3),
+                photo4: (0, utils_1.bufferToBase64)(property.photo4),
+            }));
         }
         catch (error) {
             console.error('❌ AdminService.getAllPropertiesForAdmin error:', error.message);

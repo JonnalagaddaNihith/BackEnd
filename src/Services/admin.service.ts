@@ -1,6 +1,7 @@
 import { RowDataPacket } from 'mysql2';
 import { executeQuery } from '../Config/db.config';
 import { AdminAnalytics } from '../Models/admin';
+import { bufferToBase64 } from '../Config/utils';
 
 export class AdminService {
   static async getAnalytics(): Promise<AdminAnalytics> {
@@ -126,7 +127,13 @@ export class AdminService {
          ORDER BY p.id DESC`
       );
 
-      return properties;
+      return properties.map(property => ({
+        ...property,
+        photo1: bufferToBase64(property.photo1),
+        photo2: bufferToBase64(property.photo2),
+        photo3: bufferToBase64(property.photo3),
+        photo4: bufferToBase64(property.photo4),
+      }));
     } catch (error: any) {
       console.error('❌ AdminService.getAllPropertiesForAdmin error:', error.message);
       throw error;
