@@ -7,7 +7,7 @@ export interface AuthRequest extends Request {
   user?: {
     id: number;
     email: string;
-    role: 'Owner' | 'Tenant' | 'Admin';
+    role: 'owner' | 'tenant' | 'admin';
   };
 }
 
@@ -41,7 +41,7 @@ export const authenticateToken = (
     const decoded = jwt.verify(token, jwtSecret) as {
       id: number;
       email: string;
-      role: 'Owner' | 'Tenant' | 'Admin';
+      role: 'owner' | 'tenant' | 'admin';
     };
 
     req.user = decoded;
@@ -67,7 +67,7 @@ export const authenticateToken = (
 };
 
 // Middleware to authorize based on user roles
-export const authorizeRoles = (...allowedRoles: Array<'Owner' | 'Tenant' | 'Admin'>) => {
+export const authorizeRoles = (...allowedRoles: Array<'owner' | 'tenant' | 'admin'>) => {
   return (req: AuthRequest, res: Response, next: NextFunction): void => {
     try {
       if (!req.user) {

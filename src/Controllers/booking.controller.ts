@@ -59,7 +59,7 @@ export class BookingController {
       const booking = await BookingService.getBookingById(bookingId);
       if (req.user) {
         const canView =
-          req.user.role === 'Admin' ||
+          req.user.role === 'admin' ||
           booking.tenant_id === req.user.id ||
           booking.owner_id === req.user.id;
 

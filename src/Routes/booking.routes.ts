@@ -16,7 +16,7 @@ const router = Router();
 router.post(
   '/',
   authenticateToken,
-  authorizeRoles('Tenant'),
+  authorizeRoles('tenant'),
   validateBookingCreation,
   BookingController.createBooking
 );
@@ -29,7 +29,7 @@ router.post(
 router.get(
   '/tenant/me',
   authenticateToken,
-  authorizeRoles('Tenant'),
+  authorizeRoles('tenant'),
   BookingController.getMyBookings
 );
 
@@ -41,7 +41,7 @@ router.get(
 router.get(
   '/owner/me',
   authenticateToken,
-  authorizeRoles('Owner'),
+  authorizeRoles('owner'),
   BookingController.getBookingsForMyProperties
 );
 
@@ -60,7 +60,7 @@ router.get('/:id', authenticateToken, BookingController.getBookingById);
 router.get(
   '/',
   authenticateToken,
-  authorizeRoles('Admin'),
+  authorizeRoles('admin'),
   BookingController.getAllBookings
 );
 
@@ -72,7 +72,7 @@ router.get(
 router.patch(
   '/:id/status',
   authenticateToken,
-  authorizeRoles('Owner'),
+  authorizeRoles('owner'),
   validateBookingStatusUpdate,
   BookingController.updateBookingStatus
 );
@@ -85,7 +85,7 @@ router.patch(
 router.delete(
   '/:id/cancel',
   authenticateToken,
-  authorizeRoles('Tenant'),
+  authorizeRoles('tenant'),
   BookingController.cancelBooking
 );
 
@@ -97,7 +97,7 @@ router.delete(
 router.delete(
   '/:id',
   authenticateToken,
-  authorizeRoles('Admin'),
+  authorizeRoles('admin'),
   BookingController.deleteBooking
 );
 

@@ -3,7 +3,7 @@ export interface User {
   name: string;
   email: string;
   password: string;
-  role: 'Owner' | 'Tenant' | 'Admin';
+  role: 'owner' | 'tenant' | 'admin';
   created_at?: Date;
 }
 
@@ -11,7 +11,7 @@ export interface UserRegistrationDTO {
   name: string;
   email: string;
   password: string;
-  role: 'Owner' | 'Tenant' | 'Admin';
+  role: 'owner' | 'tenant' | 'admin';
 }
 
 export interface UserLoginDTO {
@@ -23,6 +23,6 @@ export interface UserResponseDTO {
   id: number;
   name: string;
   email: string;
-  role: 'Owner' | 'Tenant' | 'Admin';
+  role: 'owner' | 'tenant' | 'admin';
   created_at: Date;
 }

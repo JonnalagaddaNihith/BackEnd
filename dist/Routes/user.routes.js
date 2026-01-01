@@ -27,11 +27,11 @@ router.get('/:id', auth_middleware_1.authenticateToken, user_controller_1.UserCo
  * @desc    Get all users (Admin only)
  * @access  Private/Admin
  */
-router.get('/', auth_middleware_1.authenticateToken, (0, auth_middleware_1.authorizeRoles)('Admin'), user_controller_1.UserController.getAllUsers);
+router.get('/', auth_middleware_1.authenticateToken, (0, auth_middleware_1.authorizeRoles)('admin'), user_controller_1.UserController.getAllUsers);
 /**
  * @route   DELETE /api/users/:id
  * @desc    Delete user (Admin only)
  * @access  Private/Admin
  */
-router.delete('/:id', auth_middleware_1.authenticateToken, (0, auth_middleware_1.authorizeRoles)('Admin'), user_controller_1.UserController.deleteUser);
+router.delete('/:id', auth_middleware_1.authenticateToken, (0, auth_middleware_1.authorizeRoles)('admin'), user_controller_1.UserController.deleteUser);
 exports.default = router;

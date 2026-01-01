@@ -50,7 +50,7 @@ class BookingController {
             }
             const booking = await booking_service_1.BookingService.getBookingById(bookingId);
             if (req.user) {
-                const canView = req.user.role === 'Admin' ||
+                const canView = req.user.role === 'admin' ||
                     booking.tenant_id === req.user.id ||
                     booking.owner_id === req.user.id;
                 if (!canView) {

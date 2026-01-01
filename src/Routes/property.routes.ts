@@ -20,7 +20,7 @@ router.get('/', PropertyController.getAllProperties);
 router.get(
   '/owner/me',
   authenticateToken,
-  authorizeRoles('Owner'),
+  authorizeRoles('owner'),
   PropertyController.getMyProperties
 );
 
@@ -39,7 +39,7 @@ router.get('/:id', PropertyController.getPropertyById);
 router.post(
   '/',
   authenticateToken,
-  authorizeRoles('Owner'),
+  authorizeRoles('owner'),
   validatePropertyCreation,
   PropertyController.createProperty
 );
@@ -52,7 +52,7 @@ router.post(
 router.put(
   '/:id',
   authenticateToken,
-  authorizeRoles('Owner'),
+  authorizeRoles('owner'),
   PropertyController.updateProperty
 );
 
@@ -64,7 +64,7 @@ router.put(
 router.delete(
   '/:id',
   authenticateToken,
-  authorizeRoles('Owner'),
+  authorizeRoles('owner'),
   PropertyController.deleteProperty
 );
 

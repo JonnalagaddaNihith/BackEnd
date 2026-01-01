@@ -16,7 +16,7 @@ router.get('/', property_controller_1.PropertyController.getAllProperties);
  * @desc    Get properties for current owner
  * @access  Private/Owner
  */
-router.get('/owner/me', auth_middleware_1.authenticateToken, (0, auth_middleware_1.authorizeRoles)('Owner'), property_controller_1.PropertyController.getMyProperties);
+router.get('/owner/me', auth_middleware_1.authenticateToken, (0, auth_middleware_1.authorizeRoles)('owner'), property_controller_1.PropertyController.getMyProperties);
 /**
  * @route   GET /api/properties/:id
  * @desc    Get property by ID
@@ -28,17 +28,17 @@ router.get('/:id', property_controller_1.PropertyController.getPropertyById);
  * @desc    Create a new property
  * @access  Private/Owner
  */
-router.post('/', auth_middleware_1.authenticateToken, (0, auth_middleware_1.authorizeRoles)('Owner'), validation_middleware_1.validatePropertyCreation, property_controller_1.PropertyController.createProperty);
+router.post('/', auth_middleware_1.authenticateToken, (0, auth_middleware_1.authorizeRoles)('owner'), validation_middleware_1.validatePropertyCreation, property_controller_1.PropertyController.createProperty);
 /**
  * @route   PUT /api/properties/:id
  * @desc    Update property
  * @access  Private/Owner
  */
-router.put('/:id', auth_middleware_1.authenticateToken, (0, auth_middleware_1.authorizeRoles)('Owner'), property_controller_1.PropertyController.updateProperty);
+router.put('/:id', auth_middleware_1.authenticateToken, (0, auth_middleware_1.authorizeRoles)('owner'), property_controller_1.PropertyController.updateProperty);
 /**
  * @route   DELETE /api/properties/:id
  * @desc    Delete property
  * @access  Private/Owner
  */
-router.delete('/:id', auth_middleware_1.authenticateToken, (0, auth_middleware_1.authorizeRoles)('Owner'), property_controller_1.PropertyController.deleteProperty);
+router.delete('/:id', auth_middleware_1.authenticateToken, (0, auth_middleware_1.authorizeRoles)('owner'), property_controller_1.PropertyController.deleteProperty);
 exports.default = router;

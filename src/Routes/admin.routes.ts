@@ -12,7 +12,7 @@ const router = Router();
 router.get(
   '/analytics',
   authenticateToken,
-  authorizeRoles('Admin'),
+  authorizeRoles('admin'),
   AdminController.getAnalytics
 );
 
@@ -24,7 +24,7 @@ router.get(
 router.get(
   '/users',
   authenticateToken,
-  authorizeRoles('Admin'),
+  authorizeRoles('admin'),
   AdminController.getAllUsers
 );
 
@@ -36,7 +36,7 @@ router.get(
 router.get(
   '/properties',
   authenticateToken,
-  authorizeRoles('Admin'),
+  authorizeRoles('admin'),
   AdminController.getAllProperties
 );
 
@@ -48,7 +48,7 @@ router.get(
 router.delete(
   '/properties/:id',
   authenticateToken,
-  authorizeRoles('Admin'),
+  authorizeRoles('admin'),
   AdminController.deleteProperty
 );
 

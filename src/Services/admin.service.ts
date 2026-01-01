@@ -8,9 +8,9 @@ export class AdminService {
       const userStats = await executeQuery<RowDataPacket[]>(
         `SELECT 
            COUNT(*) as total,
-           SUM(CASE WHEN role = 'Tenant' THEN 1 ELSE 0 END) as tenants,
-           SUM(CASE WHEN role = 'Owner' THEN 1 ELSE 0 END) as owners
-         FROM Users WHERE role != 'Admin'`
+           SUM(CASE WHEN role = 'tenant' THEN 1 ELSE 0 END) as tenants,
+           SUM(CASE WHEN role = 'owner' THEN 1 ELSE 0 END) as owners
+         FROM Users WHERE role != 'admin'`
       );
 
       const [propertyStats] = await executeQuery<RowDataPacket[]>(
@@ -28,7 +28,7 @@ export class AdminService {
       const recentUsers = await executeQuery<RowDataPacket[]>(
         `SELECT id, name, email, role, created_at 
          FROM Users 
-         WHERE role != 'Admin'
+         WHERE role != 'admin'
          ORDER BY created_at DESC 
          LIMIT 10`
       );
@@ -36,7 +36,7 @@ export class AdminService {
         `SELECT u.id, u.name, u.email, COUNT(p.id) as propertyCount
          FROM Users u
          LEFT JOIN Properties p ON u.id = p.owner_id
-         WHERE u.role = 'Owner'
+         WHERE u.role = 'owner'
          GROUP BY u.id, u.name, u.email
          ORDER BY propertyCount DESC
          LIMIT 5`
@@ -45,7 +45,7 @@ export class AdminService {
         `SELECT u.id, u.name, u.email, COUNT(b.id) as bookingCount
          FROM Users u
          LEFT JOIN Bookings b ON u.id = b.tenant_id
-         WHERE u.role = 'Tenant'
+         WHERE u.role = 'tenant'
          GROUP BY u.id, u.name, u.email
          ORDER BY bookingCount DESC
          LIMIT 5`
@@ -92,16 +92,16 @@ export class AdminService {
         `SELECT 
            u.id, u.name, u.email, u.role, u.created_at,
            CASE 
-             WHEN u.role = 'Owner' THEN (SELECT COUNT(*) FROM Properties p WHERE p.owner_id = u.id)
+             WHEN u.role = 'owner' THEN (SELECT COUNT(*) FROM Properties p WHERE p.owner_id = u.id)
              ELSE 0
            END as propertyCount,
            CASE 
-             WHEN u.role = 'Tenant' THEN (SELECT COUNT(*) FROM Bookings b WHERE b.tenant_id = u.id)
-             WHEN u.role = 'Owner' THEN (SELECT COUNT(*) FROM Bookings b JOIN Properties p ON b.property_id = p.id WHERE p.owner_id = u.id)
+             WHEN u.role = 'tenant' THEN (SELECT COUNT(*) FROM Bookings b WHERE b.tenant_id = u.id)
+             WHEN u.role = 'owner' THEN (SELECT COUNT(*) FROM Bookings b JOIN Properties p ON b.property_id = p.id WHERE p.owner_id = u.id)
              ELSE 0
            END as bookingCount
          FROM Users u
-         WHERE u.role != 'Admin'
+         WHERE u.role != 'admin'
          ORDER BY u.created_at DESC`
       );
 

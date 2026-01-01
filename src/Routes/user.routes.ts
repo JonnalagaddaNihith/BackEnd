@@ -30,13 +30,13 @@ router.get('/:id', authenticateToken, UserController.getUserById);
  * @desc    Get all users (Admin only)
  * @access  Private/Admin
  */
-router.get('/', authenticateToken, authorizeRoles('Admin'), UserController.getAllUsers);
+router.get('/', authenticateToken, authorizeRoles('admin'), UserController.getAllUsers);
 
 /**
  * @route   DELETE /api/users/:id
  * @desc    Delete user (Admin only)
  * @access  Private/Admin
  */
-router.delete('/:id', authenticateToken, authorizeRoles('Admin'), UserController.deleteUser);
+router.delete('/:id', authenticateToken, authorizeRoles('admin'), UserController.deleteUser);
 
 export default router;
