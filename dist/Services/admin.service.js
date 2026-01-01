@@ -1,0 +1,129 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.AdminService = void 0;
+const db_config_1 = require("../Config/db.config");
+class AdminService {
+    static async getAnalytics() {
+        try {
+            const userStats = await (0, db_config_1.executeQuery)(`SELECT 
+           COUNT(*) as total,
+           SUM(CASE WHEN role = 'Tenant' THEN 1 ELSE 0 END) as tenants,
+           SUM(CASE WHEN role = 'Owner' THEN 1 ELSE 0 END) as owners
+         FROM Users WHERE role != 'Admin'`);
+            const [propertyStats] = await (0, db_config_1.executeQuery)(`SELECT COUNT(*) as total FROM Properties`);
+            const [bookingStats] = await (0, db_config_1.executeQuery)(`SELECT 
+           COUNT(*) as total,
+           SUM(CASE WHEN status = 'Pending' THEN 1 ELSE 0 END) as pending,
+           SUM(CASE WHEN status = 'Approved' THEN 1 ELSE 0 END) as approved,
+           SUM(CASE WHEN status = 'Rejected' THEN 1 ELSE 0 END) as rejected
+         FROM Bookings`);
+            const recentUsers = await (0, db_config_1.executeQuery)(`SELECT id, name, email, role, created_at 
+         FROM Users 
+         WHERE role != 'Admin'
+         ORDER BY created_at DESC 
+         LIMIT 10`);
+            const topOwners = await (0, db_config_1.executeQuery)(`SELECT u.id, u.name, u.email, COUNT(p.id) as propertyCount
+         FROM Users u
+         LEFT JOIN Properties p ON u.id = p.owner_id
+         WHERE u.role = 'Owner'
+         GROUP BY u.id, u.name, u.email
+         ORDER BY propertyCount DESC
+         LIMIT 5`);
+            const topTenants = await (0, db_config_1.executeQuery)(`SELECT u.id, u.name, u.email, COUNT(b.id) as bookingCount
+         FROM Users u
+         LEFT JOIN Bookings b ON u.id = b.tenant_id
+         WHERE u.role = 'Tenant'
+         GROUP BY u.id, u.name, u.email
+         ORDER BY bookingCount DESC
+         LIMIT 5`);
+            return {
+                totalUsers: userStats[0]?.total || 0,
+                totalTenants: userStats[0]?.tenants || 0,
+                totalOwners: userStats[0]?.owners || 0,
+                totalProperties: propertyStats?.total || 0,
+                totalBookings: bookingStats?.total || 0,
+                pendingBookings: bookingStats?.pending || 0,
+                approvedBookings: bookingStats?.approved || 0,
+                rejectedBookings: bookingStats?.rejected || 0,
+                recentUsers: recentUsers.map(u => ({
+                    id: u.id,
+                    name: u.name,
+                    email: u.email,
+                    role: u.role,
+                    created_at: u.created_at
+                })),
+                topOwners: topOwners.map(o => ({
+                    id: o.id,
+                    name: o.name,
+                    email: o.email,
+                    propertyCount: o.propertyCount
+                })),
+                topTenants: topTenants.map(t => ({
+                    id: t.id,
+                    name: t.name,
+                    email: t.email,
+                    bookingCount: t.bookingCount
+                }))
+            };
+        }
+        catch (error) {
+            console.error('❌ AdminService.getAnalytics error:', error.message);
+            throw error;
+        }
+    }
+    static async getAllUsersWithStats() {
+        try {
+            const users = await (0, db_config_1.executeQuery)(`SELECT 
+           u.id, u.name, u.email, u.role, u.created_at,
+           CASE 
+             WHEN u.role = 'Owner' THEN (SELECT COUNT(*) FROM Properties p WHERE p.owner_id = u.id)
+             ELSE 0
+           END as propertyCount,
+           CASE 
+             WHEN u.role = 'Tenant' THEN (SELECT COUNT(*) FROM Bookings b WHERE b.tenant_id = u.id)
+             WHEN u.role = 'Owner' THEN (SELECT COUNT(*) FROM Bookings b JOIN Properties p ON b.property_id = p.id WHERE p.owner_id = u.id)
+             ELSE 0
+           END as bookingCount
+         FROM Users u
+         WHERE u.role != 'Admin'
+         ORDER BY u.created_at DESC`);
+            return users;
+        }
+        catch (error) {
+            console.error('❌ AdminService.getAllUsersWithStats error:', error.message);
+            throw error;
+        }
+    }
+    static async getAllPropertiesForAdmin() {
+        try {
+            const properties = await (0, db_config_1.executeQuery)(`SELECT 
+           p.*,
+           u.name as owner_name,
+           u.email as owner_email,
+           (SELECT COUNT(*) FROM Bookings b WHERE b.property_id = p.id) as bookingCount,
+           (SELECT COUNT(*) FROM Bookings b WHERE b.property_id = p.id AND b.status = 'Approved') as approvedBookings
+         FROM Properties p
+         JOIN Users u ON p.owner_id = u.id
+         ORDER BY p.id DESC`);
+            return properties;
+        }
+        catch (error) {
+            console.error('❌ AdminService.getAllPropertiesForAdmin error:', error.message);
+            throw error;
+        }
+    }
+    static async deletePropertyByAdmin(propertyId) {
+        try {
+            await (0, db_config_1.executeQuery)('DELETE FROM Bookings WHERE property_id = ?', [propertyId]);
+            const result = await (0, db_config_1.executeQuery)('DELETE FROM Properties WHERE id = ?', [propertyId]);
+            if (result.affectedRows === 0) {
+                throw new Error('Property not found');
+            }
+        }
+        catch (error) {
+            console.error('❌ AdminService.deletePropertyByAdmin error:', error.message);
+            throw error;
+        }
+    }
+}
+exports.AdminService = AdminService;
