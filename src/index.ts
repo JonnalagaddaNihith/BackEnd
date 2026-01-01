@@ -27,7 +27,7 @@ app.use(BASE_URL, routes);
 app.get('/', (req, res) => {
   res.json({
     success: true,
-    message: 'Online House Rental & Tenant Management System API',
+    message: 'RentEasy API',
     version: '1.0.0',
     endpoints: {
       health: `${BASE_URL}/health`,
@@ -46,7 +46,7 @@ const startServer = async () => {
     console.log('🔄 Testing database connection...');
     await testConnection();
     app.listen(PORT, () => {
-      console.log('🏠 Online House Rental & Tenant Management System');
+      console.log('🏠 RentEasy');
       console.log(`🚀 Server is running on http://localhost:${PORT}`);
       console.log(`📍 Base API URL: http://localhost:${PORT}${BASE_URL}`);
       console.log(`🏥 Health Check: http://localhost:${PORT}${BASE_URL}/health`);
